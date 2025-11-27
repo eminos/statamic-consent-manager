@@ -1,0 +1,34 @@
+{
+  "resources/css/consent-manager.css": {
+    "file": "assets/consent-manager-9fyLy22k.css",
+    "src": "resources/css/consent-manager.css",
+    "isEntry": true,
+    "names": [
+      "consent-manager.css"
+    ]
+  },
+  "resources/js/consent-manager.js": {
+    "file": "assets/consent-manager-CXXeS_DY.js",
+    "name": "consent-manager",
+    "src": "resources/js/consent-manager.js",
+    "isEntry": true
+  },
+  "resources/js/integrations/GoogleTagIntegration.js": {
+    "file": "assets/GoogleTagIntegration-Uyxvv6kY.js",
+    "name": "GoogleTagIntegration",
+    "src": "resources/js/integrations/GoogleTagIntegration.js",
+    "isEntry": true
+  },
+  "resources/js/integrations/LinkedInInsightIntegration.js": {
+    "file": "assets/LinkedInInsightIntegration-B7VEk0lw.js",
+    "name": "LinkedInInsightIntegration",
+    "src": "resources/js/integrations/LinkedInInsightIntegration.js",
+    "isEntry": true
+  },
+  "resources/js/integrations/MetaPixelIntegration.js": {
+    "file": "assets/MetaPixelIntegration-763Sh85W.js",
+    "name": "MetaPixelIntegration",
+    "src": "resources/js/integrations/MetaPixelIntegration.js",
+    "isEntry": true
+  }
+}

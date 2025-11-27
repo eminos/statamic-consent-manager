@@ -1,0 +1,23 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "npm run dev:frontend",
+        "dev:frontend": "vite --mode frontend",
+        "dev:cp": "vite --mode cp",
+        "build": "npm run build:frontend && npm run build:cp",
+        "build:frontend": "vite build --mode frontend",
+        "build:frontend:watch": "npm run build:frontend -- --watch",
+        "build:cp": "vite build --mode cp",
+        "build:cp:watch": "npm run build:cp -- --watch"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue2": "^2.3.4",
+        "glob": "^11.0.3",
+        "laravel-vite-plugin": "^2.0.1",
+        "tailwindcss": "^4.1.16",
+        "vite": "^7.0.0"
+    },
+    "dependencies": {
+        "@tailwindcss/vite": "^4.1.16"
+    }
+}

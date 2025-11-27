@@ -1,0 +1,45 @@
+{
+    "name": "eminos/statamic-consent-manager",
+    "type": "statamic-addon",
+    "description": "A powerful, GDPR-compliant consent management solution (\"cookie banner\") for Statamic CMS that gives you complete control over tracking scripts and user privacy.",
+    "license": "proprietary",
+    "require": {
+        "php": "^8.2",
+        "statamic/cms": "^5.0"
+    },
+    "require-dev": {
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "orchestra/testbench": "^9.0|^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Eminos\\StatamicConsentManager\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Eminos\\StatamicConsentManager\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "statamic": {
+            "name": "Consent Manager",
+            "description": "GDPR-compliant consent management for Statamic"
+        },
+        "laravel": {
+            "providers": [
+                "Eminos\\StatamicConsentManager\\ServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pixelfear/composer-dist-plugin": true,
+            "pestphp/pest-plugin": true
+        }
+    },
+    "scripts": {
+        "test": "pest"
+    }
+}

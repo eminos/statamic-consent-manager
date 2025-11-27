@@ -1,0 +1,30 @@
+{{#
+    Meta Pixel Integration
+    
+    Loading Strategy: always (defined in MetaPixelIntegration.php)
+    Loads immediately with consent revoked, then grants consent when user accepts.
+    
+    Available variables:
+    - config.pixel_id: The Meta/Facebook Pixel ID
+    - config.required_categories: Categories required for this integration
+    - config.placement: Current placement (head or body)
+#}}
+{{ if config:placement == "body" }}
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('consent', 'revoke');
+fbq('init', '{{ config:pixel_id }}');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id={{ config:pixel_id }}&ev=PageView&noscript=1"
+/></noscript>
+<script type="module" src="{{ vite:asset src='resources/js/integrations/MetaPixelIntegration.js' directory='vendor/statamic-consent-manager/frontend' }}"></script>
+{{ /if }}

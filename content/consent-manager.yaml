@@ -1,0 +1,68 @@
+categories:
+  -
+    handle: necessary
+    name: Necessary
+    description: 'These cookies are essential for the proper functioning of our website. They enable core functionality such as page navigation, access to secure areas, and basic user interface features.'
+    required: true
+    default_enabled: true
+    enabled: true
+    type: category
+  -
+    handle: functional
+    name: Functional
+    description: 'These cookies enable the website to provide enhanced functionality and personalization. They may be set by us or by third-party providers whose services we have added to our pages.'
+    required: false
+    default_enabled: true
+    enabled: true
+    type: category
+  -
+    handle: analytics
+    name: Analytics
+    description: 'These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site. They help us to know which pages are the most and least popular and see how visitors move around the site.'
+    required: false
+    default_enabled: true
+    enabled: true
+    type: category
+  -
+    handle: marketing
+    name: Marketing
+    description: 'These cookies are used to deliver advertisements that are more relevant to you and your interests. They are also used to limit the number of times you see an advertisement and help measure the effectiveness of advertising campaigns.'
+    required: false
+    default_enabled: true
+    enabled: true
+    type: category
+services: []
+integrations:
+  google_tag:
+    enabled: false
+    measurement_id: ''
+    consent_mapping:
+      -
+        category: necessary
+        storage_types:
+          - security_storage
+      -
+        category: functional
+        storage_types:
+          - functionality_storage
+          - personalization_storage
+      -
+        category: analytics
+        storage_types:
+          - analytics_storage
+      -
+        category: marketing
+        storage_types:
+          - ad_storage
+          - ad_user_data
+          - ad_personalization
+  meta_pixel:
+    enabled: false
+    pixel_id: ''
+    required_categories:
+      - marketing
+  linkedin_insight:
+    enabled: false
+    partner_id: ''
+    required_categories:
+      - marketing

@@ -1,0 +1,267 @@
+title: Consent Manager
+tabs:
+  services:
+    display: Services
+    sections:
+      -
+        fields:
+          -
+            handle: services
+            field:
+              type: replicator
+              display: Services
+              instructions: 'Add custom tracking services and their scripts. For common services like Google Tag, Meta Pixel, or LinkedIn Insight Tag, use the pre-built integrations on the "Integrations" tab instead.'
+              collapse: false
+              sets:
+                service:
+                  display: Service
+                  handle: service
+                  fields:
+                    -
+                      handle: handle
+                      field:
+                        type: slug
+                        display: Handle
+                        instructions: 'Unique identifier for this service (e.g., "hotjar"). Auto-generated from name if left empty.'
+                        required: false
+                        from: name
+                        generate: true
+                    -
+                      handle: name
+                      field:
+                        type: text
+                        display: Name
+                        instructions: 'User-friendly name (e.g., "Hotjar"). Used for reference and in the consent dialog details.'
+                        required: true
+                    -
+                      handle: description
+                      field:
+                        type: textarea
+                        display: Description
+                        instructions: 'Short description of the service and its purpose. Shown in the consent dialog details.'
+                        character_limit: 300
+                        required: false
+                    -
+                      handle: categories
+                      field:
+                        type: select
+                        display: Categories
+                        instructions: 'Select the categories this service belongs to. Options are populated from the Categories tab.'
+                        multiple: true
+                        searchable: true
+                        required: true
+                        taggable: false
+                    -
+                      handle: scripts
+                      field:
+                        type: grid
+                        display: Scripts
+                        instructions: 'Define the scripts for this service and where they should be placed.'
+                        add_row: 'Add Script'
+                        mode: table
+                        fields:
+                          -
+                            handle: script
+                            field:
+                              type: code
+                              display: Script
+                              instructions: 'The script code to be injected.'
+                              mode: htmlmixed
+                              theme: material
+                              indent_type: spaces
+                              indent_size: 2
+                              line_numbers: true
+                              width: 75
+                          -
+                            handle: placement
+                            field:
+                              type: select
+                              display: Placement
+                              instructions: 'Where the script should be placed in the document.'
+                              options:
+                                head: Head
+                                body: 'Body'
+                              width: 25
+                              default: body
+  categories:
+    display: Categories
+    sections:
+      -
+        fields:
+          -
+            handle: categories
+            field:
+              type: replicator
+              display: Categories
+              instructions: 'Define the consent categories.'
+              collapse: false
+              sets:
+                category:
+                  display: Category
+                  handle: category
+                  fields:
+                    -
+                      handle: handle
+                      field:
+                        type: slug
+                        display: Handle
+                        instructions: 'Unique identifier for this category (e.g., "necessary"). Auto-generated from name if left empty.'
+                        required: false
+                        from: name
+                        generate: true
+                    -
+                      handle: name
+                      field:
+                        type: text
+                        display: Name
+                        instructions: 'Display name for the category (e.g., "Necessary", "Analytics").'
+                        required: true
+                    -
+                      handle: description
+                      field:
+                        type: textarea
+                        display: Description
+                        instructions: 'Description of the category and its purpose.'
+                        required: false
+                    -
+                      handle: required
+                      field:
+                        type: toggle
+                        display: Required
+                        instructions: 'Whether this category is required and cannot be disabled.'
+                        default: false
+                    -
+                      handle: default_enabled
+                      field:
+                        type: toggle
+                        display: 'Enabled by Default'
+                        instructions: 'Whether this category is enabled by default in the consent dialog.'
+                        default: true
+  integrations:
+    display: Integrations
+    sections:
+      -
+        fields:
+          -
+            handle: integrations
+            field:
+              type: group
+              border: false
+              fields:
+                -
+                  handle: google_tag
+                  field:
+                    type: group
+                    display: 'Google Tag (Consent Mode v2)'
+                    instructions: 'Manage automatic Google Tag injection with Consent Mode v2 signals.'
+                    fields:
+                      -
+                        handle: enabled
+                        field:
+                          type: toggle
+                          display: Enabled
+                          instructions: 'Enable to inject Google Tag and manage consent signals automatically.'
+                          default: false
+                      -
+                        handle: measurement_id
+                        field:
+                          type: text
+                          display: 'Measurement ID'
+                          instructions: 'Provide your Google Tag measurement ID (e.g., "G-XXXXXXXXXX").'
+                          required: false
+                          character_limit: 30
+                      -
+                        handle: consent_mapping
+                        field:
+                          type: grid
+                          display: 'Consent Mapping'
+                          instructions: 'Map your categories to Google storage types. Categories are loaded dynamically from the Categories tab.'
+                          add_row: 'Add Mapping'
+                          mode: table
+                          fields:
+                            -
+                              handle: category
+                              field:
+                                type: select
+                                display: Category
+                                instructions: 'Select a category from your configuration.'
+                                width: 33
+                            -
+                              handle: storage_types
+                              field:
+                                type: select
+                                display: 'Google Storage Types'
+                                instructions: 'Select which Google storage types this category controls.'
+                                multiple: true
+                                options:
+                                  ad_storage: 'Ad Storage'
+                                  ad_user_data: 'Ad User Data'
+                                  ad_personalization: 'Ad Personalization'
+                                  analytics_storage: 'Analytics Storage'
+                                  functionality_storage: 'Functionality Storage'
+                                  personalization_storage: 'Personalization Storage'
+                                  security_storage: 'Security Storage'
+                                width: 67
+                -
+                  handle: meta_pixel
+                  field:
+                    type: group
+                    display: 'Meta Pixel (Facebook)'
+                    instructions: 'Manage automatic Meta Pixel injection with consent integration.'
+                    fields:
+                      -
+                        handle: enabled
+                        field:
+                          type: toggle
+                          display: Enabled
+                          instructions: 'Enable to inject Meta Pixel and manage consent signals automatically.'
+                          default: false
+                      -
+                        handle: pixel_id
+                        field:
+                          type: text
+                          display: 'Pixel ID'
+                          instructions: 'Provide your Meta Pixel ID (e.g., "1234567890").'
+                          required: false
+                          character_limit: 30
+                      -
+                        handle: required_categories
+                        field:
+                          type: select
+                          display: 'Required Categories'
+                          instructions: 'Select which categories must be granted for Meta Pixel to activate. All selected categories must be granted.'
+                          multiple: true
+                          searchable: true
+                          required: false
+                -
+                  handle: linkedin_insight
+                  field:
+                    type: group
+                    display: 'LinkedIn Insight Tag'
+                    instructions: 'Manage automatic LinkedIn Insight Tag injection with consent integration.'
+                    fields:
+                      -
+                        handle: enabled
+                        field:
+                          type: toggle
+                          display: Enabled
+                          instructions: 'Enable to inject LinkedIn Insight Tag and manage consent signals automatically.'
+                          default: false
+                      -
+                        handle: partner_id
+                        field:
+                          type: text
+                          display: 'Partner ID'
+                          instructions: 'Provide your LinkedIn Partner ID (e.g., "123456").'
+                          required: false
+                          character_limit: 30
+                      -
+                        handle: required_categories
+                        field:
+                          type: select
+                          display: 'Required Categories'
+                          instructions: 'Select which categories must be granted for LinkedIn Insight Tag to activate. All selected categories must be granted.'
+                          multiple: true
+                          searchable: true
+                          required: false
+                          taggable: false

@@ -1,0 +1,4 @@
+node_modules
+vendor
+.phpunit.cache
+tests/__fixtures__

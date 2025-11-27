@@ -1,0 +1,78 @@
+
+<script type="module" src="{{ vite:asset src="resources/js/consent-manager.js" directory="vendor/statamic-consent-manager/frontend" }}"></script>
+{{# If you've published this file and are using Tailwind CSS, you can remove the line below and let your asset build handle the styles #}}
+<link rel="stylesheet" href="{{ vite:asset src="resources/css/consent-manager.css" directory="vendor/statamic-consent-manager/frontend" }}">
+
+{{# Banner (corner) dialog - Non-modal, shows when consent needed #}}
+<dialog data-consent-manager="banner" class="fixed inset-auto right-4 bottom-4 z-50 w-full max-w-sm m-0 p-0 border-0 bg-transparent open:block starting:open:opacity-0 open:opacity-100 starting:open:translate-y-4 open:translate-y-0 opacity-0 translate-y-4 transition-discrete transition-all duration-500 ease-out">
+    <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+        <div class="p-4">
+            <h2 class="text-base font-semibold text-gray-900">{{ trans:consent-manager::dialog.basic_headline }}</h2>
+            <div class="text-sm text-gray-600 mt-2 space-y-2">
+                {{ trans:consent-manager::dialog.basic_body | markdown }}
+            </div>
+        </div>
+        <div class="p-4 border-t flex items-center justify-end gap-2">
+            <button type="button" data-consent-manager-action="customize" class="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">{{ trans:consent-manager::dialog.customize_button_label }}</button>
+            <button type="button" data-consent-manager-action="reject-all" class="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">{{ trans:consent-manager::dialog.reject_button_label }}</button>
+            <button type="button" data-consent-manager-action="accept-all" class="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">{{ trans:consent-manager::dialog.accept_button_label }}</button>
+        </div>
+    </div>
+</dialog>
+
+{{# Preferences (center) dialog - Modal for detailed consent management #}}
+<dialog data-consent-manager="preferences" class="opacity-0 open:opacity-100 starting:open:opacity-0 transition duration-200 ease-out transition-discrete bg-gray-50 rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto inset-0 m-auto p-6 backdrop:bg-black/50">
+    <div>
+        <h2 class="text-xl font-semibold text-gray-900">{{ trans:consent-manager::dialog.advanced_headline }}</h2>
+        <div class="text-gray-600 mt-2 space-y-2">
+            {{ trans:consent-manager::dialog.advanced_body | markdown }}
+        </div>
+    </div>
+    <div class="mt-6 space-y-4">
+        {{ categories }}
+            <div class="border rounded-md" data-consent-category="{{ handle }}">
+                    <div class="flex items-start space-x-3 p-4">
+                    <div class="shrink-0 pt-0.5">
+                            <input id="category-{{ handle }}" type="checkbox" data-consent-manager-toggle="{{ handle }}" class="sr-only peer"{{ if required }} data-required="true" checked disabled{{ /if }}{{ unless required }}{{ if default_enabled }} checked{{ /if }}{{ /unless }}>
+                            <label for="category-{{ handle }}" class="block w-10 h-6 rounded-full relative cursor-pointer bg-gray-300 transition-colors after:isolate after:block after:w-4 after:h-4 after:bg-white after:rounded-full after:absolute after:left-1 after:top-1 after:transform after:transition-transform peer-checked:bg-blue-600 peer-checked:after:translate-x-4 peer-indeterminate:bg-blue-400 peer-indeterminate:after:translate-x-2 peer-disabled:bg-blue-600 peer-disabled:after:translate-x-4 peer-disabled:cursor-not-allowed"></label>
+                    </div>
+                    <div class="flex-1">
+                        <label for="category-{{ handle }}" class="text-sm font-medium text-gray-900 cursor-pointer">
+                            {{ name }}
+                            {{ if required }}<span class="text-xs text-gray-500">(Required)</span>{{ /if }}
+                        </label>
+                        {{ if description }}<p class="text-sm text-gray-600 mt-1">{{ description }}</p>{{ /if }}
+
+                        {{ if services | count }}
+                            <div class="mt-3">
+                                <button type="button" class="text-sm text-blue-600 hover:underline flex items-center" data-consent-accordion-toggle>
+                                    <span class="mr-1" data-accordion-label>Show services</span>
+                                    <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
+                                </button>
+                                <div class="mt-2" data-consent-accordion-panel hidden>
+                                    <ul class="space-y-2">
+                                        {{ services }}
+                                            <li class="flex items-start justify-between space-x-3">
+                                                <div>
+                                                    <div class="text-sm font-medium text-gray-900">{{ name }}</div>
+                                                    {{ if description }}<div class="text-xs text-gray-600 mt-0.5">{{ description }}</div>{{ /if }}
+                                                </div>
+                                                <div class="shrink-0 pt-0.5">
+                                                    <input id="service-{{ handle }}" type="checkbox" data-consent-manager-service-toggle="{{ handle }}" class="sr-only peer"{{ if required }} checked disabled{{ /if }}{{ if default_enabled }} checked{{ /if }}>
+                                                    <label for="service-{{ handle }}" class="block w-10 h-6 rounded-full relative cursor-pointer bg-gray-300 transition-colors after:isolate after:block after:w-4 after:h-4 after:bg-white after:rounded-full after:absolute after:left-1 after:top-1 after:transform after:transition-transform peer-checked:bg-blue-600 peer-checked:after:translate-x-4 peer-indeterminate:bg-blue-400 peer-indeterminate:after:translate-x-2 peer-disabled:bg-blue-600 peer-disabled:after:translate-x-4 peer-disabled:cursor-not-allowed"></label>
+                                                </div>
+                                            </li>
+                                        {{ /services }}
+                                    </ul>
+                                </div>
+                            </div>
+                        {{ /if }}
+                    </div>
+                </div>
+            </div>
+        {{ /categories }}
+    </div>
+    <div class="flex flex-wrap gap-3 justify-end">
+        <button type="button" data-consent-manager-action="save" class="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">{{ trans:consent-manager::dialog.advanced_save_button_label }}</button>
+    </div>
+</dialog>
