@@ -12,6 +12,9 @@ return [
     'advanced_accept_button_label' => 'Accept All',
     'advanced_reject_button_label' => 'Reject All',
     'advanced_save_button_label' => 'Save Preferences',
+    'required_label' => 'Required',
+    'show_services' => 'Show services',
+    'hide_services' => 'Hide services',
 
     // Integration service descriptions
     'integrations' => [

@@ -224,10 +224,19 @@ class ConsentManager {
                 const panel = btn.closest('[data-consent-category]')?.querySelector('[data-consent-accordion-panel]');
                 if (!panel) return;
                 const isHidden = panel.hasAttribute('hidden');
-                if (isHidden) panel.removeAttribute('hidden');
-                else panel.setAttribute('hidden', '');
+                if (isHidden) {
+                    panel.removeAttribute('hidden');
+                    btn.setAttribute('data-open', 'true');
+                } else {
+                    panel.setAttribute('hidden', '');
+                    btn.removeAttribute('data-open');
+                }
                 const label = btn.querySelector('[data-accordion-label]');
-                if (label) label.textContent = isHidden ? 'Hide services' : 'Show services';
+                if (label) {
+                    const showText = btn.getAttribute('data-label-show') || 'Show services';
+                    const hideText = btn.getAttribute('data-label-hide') || 'Hide services';
+                    label.textContent = isHidden ? hideText : showText;
+                }
             });
         });
 
@@ -275,6 +284,8 @@ class ConsentManager {
         });
 
         preferences?.addEventListener('click', (e) => {
+            if (e.target !== preferences) return;
+
             // check if clicking outside the dialog (backdrop)
             const rect = preferences.getBoundingClientRect();
             const isInDialog = (
@@ -289,15 +300,17 @@ class ConsentManager {
         });
 
 
-        // TODO: THIS should NOT be an eventlistener on the document, it needs to go on the buttons!
-        document.addEventListener('click', (e) => {
-            const button = e.target.closest('[data-give-consent]');
-            if (!button) return;
+        this.bindGiveConsentButtons();
+    }
 
-            const serviceHandle = button.getAttribute('data-give-consent');
-            if (serviceHandle) {
-                this.grantConsentToService(serviceHandle);
-            }
+    bindGiveConsentButtons() {
+        document.querySelectorAll('[data-give-consent]').forEach(button => {
+            button.addEventListener('click', () => {
+                const serviceHandle = button.getAttribute('data-give-consent');
+                if (serviceHandle) {
+                    this.grantConsentToService(serviceHandle);
+                }
+            });
         });
     }
 
@@ -314,6 +327,7 @@ class ConsentManager {
         
         banner?.close();
         preferences?.showModal();
+        preferences?.focus();
         this.syncUIFromConsent();
     }
 
