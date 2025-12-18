@@ -2,7 +2,24 @@
     "name": "eminos/statamic-consent-manager",
     "type": "statamic-addon",
     "description": "A powerful, GDPR-compliant consent management solution (\"cookie banner\") for Statamic CMS that gives you complete control over tracking scripts and user privacy.",
+    "keywords": [
+        "statamic",
+        "addon",
+        "gdpr",
+        "consent",
+        "cookie banner",
+        "privacy"
+    ],
+    "homepage": "https://github.com/eminos/statamic-consent-manager",
     "license": "proprietary",
+    "authors": [
+        {
+            "name": "Emin Jasarevic",
+            "email": "emin@kiwikiwi.se",
+            "homepage": "https://kiwikiwi.se",
+            "role": "Developer"
+        }
+    ],
     "require": {
         "php": "^8.2",
         "statamic/cms": "^5.0"
