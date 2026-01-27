@@ -3,6 +3,7 @@
 namespace Eminos\StatamicConsentManager\Tags\Concerns;
 
 use Illuminate\Support\Str;
+use Statamic\Facades\Antlers;
 
 /**
  * Trait for handling the consent_manager:require tag functionality
@@ -44,7 +45,7 @@ trait HandlesRequireTag
             $content = preg_replace('/\{\{\s*placeholder\s*\}\}.*?\{\{\s*\/placeholder\s*\}\}/s', '', $rawContent);
         }
         
-        $content = trim($content);
+        $content = (string) Antlers::parse(trim($content), $this->context);
 
         if (!$service) {
             return '<!-- consent_manager:require - service parameter required -->';
