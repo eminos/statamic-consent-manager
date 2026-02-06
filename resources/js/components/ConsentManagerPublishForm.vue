@@ -1,123 +1,112 @@
 <template>
-    <publish-container
+    <PublishContainer
         ref="container"
         name="base"
         :blueprint="blueprint"
         v-model="currentValues"
-        reference="collection"
         :meta="currentMeta"
         :errors="errors"
-        v-slot="{ setFieldValue, setFieldMeta }"
     >
-        <div>
-            <div class="flex items-center mb-6">
-                <h1 class="flex-1">{{ title }}</h1>
-                <div class="btn-group">
-                    <button
-                        @click="saveWithReconsent"
-                        class="btn"
-                        :disabled="saving"
-                    >
-                        {{ __('Save & Require Re-consent') }}
-                    </button>
+        <Header :title="title">
+            <ButtonGroup>
+                <Button
+                    :text="__('Save & Require Re-consent')"
+                    :disabled="saving"
+                    @click="saveWithReconsent"
+                />
+                <Button
+                    variant="primary"
+                    :text="__('Save')"
+                    :disabled="saving"
+                    @click="saveNormal"
+                />
+            </ButtonGroup>
+        </Header>
 
-                    <button
-                        @click="saveNormal"
-                        class="btn-primary"
-                        :disabled="saving"
-                    >
-                        {{ __('Save') }}
-                    </button>
-                </div>
-            </div>
-
-            <publish-tabs
-                @updated="setFieldValue"
-                @meta-updated="setFieldMeta"
-                :enable-sidebar="hasSidebar"
-                :read-only="false" />
-        </div>
-    </publish-container>
+        <PublishTabs />
+    </PublishContainer>
 </template>
 
-<script>
-export default {
-    props: {
-        title: String,
-        action: String,
-        blueprint: Object,
-        meta: Object,
-        values: Object
-    },
+<script setup>
+import { ref, watch, onMounted, onUnmounted, useTemplateRef } from 'vue';
+import { Header, Button, ButtonGroup, PublishContainer, PublishTabs } from '@statamic/cms/ui';
+import axios from 'axios';
 
-    data() {
-        return {
-            currentValues: this.values,
-            currentMeta: this.meta,
-            saving: false,
-            errors: {},
-            hasSidebar: this.blueprint.tabs.map(tab => tab.handle).includes('sidebar'),
-        }
-    },
+const props = defineProps({
+    title: { type: String, required: true },
+    action: { type: String, required: true },
+    blueprint: { type: Object, required: true },
+    meta: { type: Object, required: true },
+    values: { type: Object, required: true },
+});
 
-    watch: {
-        values(newValues) {
-            this.currentValues = newValues;
-        },
-        meta(newMeta) {
-            this.currentMeta = newMeta;
-        }
-    },
+const emit = defineEmits(['saved']);
 
-    methods: {
-        clearErrors() {
-            this.errors = {};
-        },
+const container = useTemplateRef('container');
 
-        saveWithReconsent() {
-            this.performSave(true);
-        },
+const currentValues = ref(props.values);
+const currentMeta = ref(props.meta);
+const saving = ref(false);
+const errors = ref({});
 
-        saveNormal() {
-            this.performSave(false);
-        },
+watch(() => props.values, (newValues) => {
+    currentValues.value = newValues;
+});
 
-        performSave(requireReconsent) {
-            this.saving = true;
-            this.clearErrors();
+watch(() => props.meta, (newMeta) => {
+    currentMeta.value = newMeta;
+});
 
-            const payload = {
-                ...this.currentValues,
-                require_reconsent: requireReconsent
-            };
-
-            this.$axios.patch(this.action, payload)
-                .then(response => {
-                    this.saving = false;
-                    this.$toast.success(response.data.message || __('Saved'));
-                    this.$refs.container.saved();
-                    this.$emit('saved', response);
-                })
-                .catch(error => {
-                    this.saving = false;
-                    
-                    if (error.response && error.response.status === 422) {
-                        const { message, errors } = error.response.data;
-                        this.errors = errors || {};
-                        this.$toast.error(message || __('Validation failed. Please check the form.'));
-                    } else {
-                        const message = error.response?.data?.message;
-                        this.$toast.error(message || __('Something went wrong'));
-                    }
-                });
-        }
-    },
-
-    created() {
-        this.$keys.bindGlobal(['mod+s'], e => {
-            e.preventDefault();
-            this.saveNormal();
-        });
-    }
+function clearErrors() {
+    errors.value = {};
 }
+
+function saveWithReconsent() {
+    performSave(true);
+}
+
+function saveNormal() {
+    performSave(false);
+}
+
+function performSave(requireReconsent) {
+    saving.value = true;
+    clearErrors();
+
+    const payload = {
+        ...currentValues.value,
+        require_reconsent: requireReconsent,
+    };
+
+    axios.patch(props.action, payload)
+        .then(response => {
+            saving.value = false;
+            Statamic.$toast.success(response.data.message || __('Saved'));
+            container.value.saved();
+            emit('saved', response);
+        })
+        .catch(error => {
+            saving.value = false;
+
+            if (error.response && error.response.status === 422) {
+                const { message, errors: responseErrors } = error.response.data;
+                errors.value = responseErrors || {};
+                Statamic.$toast.error(message || __('Validation failed. Please check the form.'));
+            } else {
+                const message = error.response?.data?.message;
+                Statamic.$toast.error(message || __('Something went wrong'));
+            }
+        });
+}
+
+let saveKeyBinding;
+
+onMounted(() => {
+    saveKeyBinding = Statamic.$keys.bindGlobal(['mod+s'], (e) => {
+        e.preventDefault();
+        saveNormal();
+    });
+});
+
+onUnmounted(() => saveKeyBinding.destroy());
 </script>

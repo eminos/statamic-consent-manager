@@ -2,3 +2,4 @@ node_modules
 vendor
 .phpunit.cache
 tests/__fixtures__
+.claude

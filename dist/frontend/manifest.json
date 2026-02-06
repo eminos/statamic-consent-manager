@@ -1,8 +1,9 @@
 {
   "resources/css/consent-manager.css": {
-    "file": "assets/consent-manager-CHnAS_uN.css",
+    "file": "assets/consent-manager-DStkC-7b.css",
     "src": "resources/css/consent-manager.css",
     "isEntry": true,
+    "name": "consent-manager",
     "names": [
       "consent-manager.css"
     ]

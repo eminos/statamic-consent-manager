@@ -17,7 +17,7 @@ Most cookie banner solutions are either too simple (just a "we use cookies" mess
 - **Developer Friendly**: Built with Antlers and Tailwind, making it easy to style and extend.
 - **Compliance Made Easy**: Built-in support for Google Consent Mode v2 and other major platforms.
 
-[![Statamic 5.0+](https://img.shields.io/badge/Statamic-5.0+-FF269E?style=flat&logo=statamic)](https://statamic.com) [![Commercial License](https://img.shields.io/badge/License-Commercial-orange)](LICENSE.md)
+[![Statamic 5.0+](https://img.shields.io/badge/Statamic-5.0+-FF269E?style=flat&logo=statamic)](https://statamic.com) [![Statamic 6.0+](https://img.shields.io/badge/Statamic-6.0+-FF269E?style=flat&logo=statamic)](https://statamic.com) [![Commercial License](https://img.shields.io/badge/License-Commercial-orange)](LICENSE.md)
 
 <p align="center">
     <a href="docs/screenshot-1.png"><img src="docs/screenshot-1.png" width="32%" alt="Screenshot 1"></a>
@@ -29,10 +29,12 @@ Most cookie banner solutions are either too simple (just a "we use cookies" mess
     <a href="docs/screenshot-6.png"><img src="docs/screenshot-6.png" width="32%" alt="Screenshot 6"></a>
 </p>
 
-## Requirements
+## Statamic support
 
-- **PHP** 8.2 or higher
-- **Statamic** 5.0 or higher
+| Statamic version | Addon version | Addon branch |
+| --- | --- | --- |
+| Statamic 5 | `1.x` | `1.x` |
+| Statamic 6 | `2.x` | `main` |
 
 ## Features
 
@@ -131,7 +133,7 @@ This is a commercial addon that requires a license for production use.
 
 See [LICENSE.md](LICENSE.md) for full license terms.
 
-Copyright © 2025 Emin Jasarevic
+Copyright © 2026 Emin Jasarevic
 
 ---
 

@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import vue2 from '@vitejs/plugin-vue2';
 import tailwindcss from '@tailwindcss/vite';
+import statamic from '@statamic/cms/vite-plugin';
 import { glob } from 'glob';
  
 export default defineConfig(({ command, mode }) => {
@@ -9,6 +9,8 @@ export default defineConfig(({ command, mode }) => {
     
     return {
         plugins: [
+            ...(isCp ? [statamic()] : []),
+            tailwindcss(),
             laravel({
                 input: isCp 
                     ? ['resources/js/cp.js']
@@ -21,8 +23,6 @@ export default defineConfig(({ command, mode }) => {
                 publicDirectory: isCp ? 'dist/cp' : 'dist/frontend',
                 buildDirectory: '.',
             }),
-            ...(isCp ? [vue2()] : []),
-            tailwindcss(),
         ],
     };
 });
