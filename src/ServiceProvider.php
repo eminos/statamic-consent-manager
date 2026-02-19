@@ -43,6 +43,13 @@ class ServiceProvider extends AddonServiceProvider
 
     public function bootAddon(): void
     {
+        Statamic::afterInstalled(function ($command) {
+            $command->call('vendor:publish', [
+                '--tag' => 'consent-manager-assets',
+                '--force' => true,
+            ]);
+        });
+
         // Publish frontend & CP assets
         $this->publishes([
             __DIR__.'/../dist/' => public_path('vendor/statamic-consent-manager/'),
