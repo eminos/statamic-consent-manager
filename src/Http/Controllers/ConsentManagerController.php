@@ -248,7 +248,7 @@ class ConsentManagerController extends CpController
         return BlueprintFacade::make()->setContents($contents);
     }
 
-    private function blueprint(array $configuration = null): Blueprint
+    private function blueprint(?array $configuration = null): Blueprint
     {
         $path = __DIR__.'/../../../resources/blueprints/'.self::CONFIG_FILENAME.'.yaml';
 
