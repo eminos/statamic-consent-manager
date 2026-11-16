@@ -100,17 +100,16 @@ class ConsentManager {
                 return;
             }
 
-            if (!(service.handle in this.consentData.services)) {
-                let defaultValue = false;
-                if (service.categories && service.categories.length > 0) {
-                    defaultValue = service.categories.some(catId => {
-                        const category = this.categoryIndex[catId];
-                        return category && category.required;
-                    });
-                }
-                this.consentData.services[service.handle] = defaultValue;
+            if (this.isServiceRequired(service)) {
+                this.consentData.services[service.handle] = true;
+            } else if (!(service.handle in this.consentData.services)) {
+                this.consentData.services[service.handle] = false;
             }
         });
+    }
+
+    isServiceRequired(service) {
+        return !!(service && Array.isArray(service.categories) && service.categories.some(catId => this.categoryIndex[catId]?.required));
     }
 
     applyAllIntegrationUpdates() {
@@ -145,6 +144,7 @@ class ConsentManager {
     }
 
     saveConsentToCookie() {
+        this.ensureServicePreferences();
         this.consentData.revision_date = this.currentRevisionDate;
         
         const value = JSON.stringify(this.consentData);
@@ -430,11 +430,17 @@ class ConsentManager {
         const svcToggles = document.querySelectorAll('[data-consent-manager-service-toggle]');
         svcToggles.forEach(toggle => {
             const handle = toggle.getAttribute('data-consent-manager-service-toggle');
+            const service = this.services.find(s => s.handle === handle);
+
+            if (this.isServiceRequired(service)) {
+                toggle.checked = true;
+                toggle.disabled = true;
+                return;
+            }
             
             if (handle in (this.consentData.services || {})) {
                 toggle.checked = !!this.consentData.services[handle];
             } else {
-                const service = this.services.find(s => s.handle === handle);
                 if (service && service.categories && service.categories.length > 0) {
                     const hasDefaultEnabledCategory = service.categories.some(catId => {
                         const category = this.categoryIndex[catId];
@@ -626,6 +632,7 @@ class ConsentManager {
      * @returns {boolean} True if consent is granted for the service
      */
     getServiceConsent(serviceHandle) {
+        if (this.isServiceRequired(this.services.find(service => service.handle === serviceHandle))) return true;
         if (!this.consentData || !this.consentData.services) return false;
         return this.consentData.services[serviceHandle] === true;
     }

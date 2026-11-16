@@ -150,6 +150,8 @@ Categories organize your tracking services into logical groups. The addon includ
 
 **Services in required categories** are automatically consented and cannot be disabled by users. You can add, remove, or modify categories directly in the Control Panel.
 
+A service belongs to the required set if any of its categories is required, even when it also appears in an optional category. Reject All and Save Preferences keep these services enabled; an older cookie with a denied value cannot disable them. Their scripts and conditional content render immediately, without waiting for a consent cookie. Optional services still require consent.
+
 ### Managing Services
 
 Services represent individual tracking scripts or third-party tools that require consent.

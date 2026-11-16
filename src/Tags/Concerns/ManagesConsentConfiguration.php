@@ -106,6 +106,21 @@ trait ManagesConsentConfiguration
 
     protected function hasConsentForService(string $serviceId): bool
     {
+        foreach ($this->getAllAvailableServices() as $service) {
+            if (($service['handle'] ?? '') !== $serviceId) {
+                continue;
+            }
+
+            foreach ($this->configuration()['categories'] ?? [] as $category) {
+                $handle = $category['handle'] ?? Str::slug($category['name'] ?? '');
+                if (($category['required'] ?? false) && in_array($handle, $service['categories'] ?? [], true)) {
+                    return true;
+                }
+            }
+
+            break;
+        }
+
         $cookieName = config('consent-manager.cookie_name', 'consent_manager');
         
         if (!isset($_COOKIE[$cookieName])) {

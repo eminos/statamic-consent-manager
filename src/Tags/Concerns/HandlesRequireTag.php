@@ -2,8 +2,6 @@
 
 namespace Eminos\StatamicConsentManager\Tags\Concerns;
 
-use Illuminate\Support\Str;
-
 /**
  * Trait for handling the consent_manager:require tag functionality
  */
@@ -53,11 +51,9 @@ trait HandlesRequireTag
         $availableServices = $this->getAllAvailableServices();
         
         $serviceExists = false;
-        $serviceCategories = [];
         foreach ($availableServices as $s) {
             if (($s['handle'] ?? '') === $service) {
                 $serviceExists = true;
-                $serviceCategories = $s['categories'] ?? [];
                 break;
             }
         }
@@ -76,19 +72,6 @@ trait HandlesRequireTag
         }
 
         $hasConsent = $this->hasConsentForService($service);
-        
-        if (!$hasConsent) {
-            $config = $this->configuration();
-            $categories = $config['categories'] ?? [];
-            foreach ($categories as $category) {
-                $categoryHandle = $category['handle'] ?? Str::slug($category['name'] ?? '');
-                $isRequired = $category['required'] ?? false;
-                if ($isRequired && in_array($categoryHandle, $serviceCategories, true)) {
-                    $hasConsent = true;
-                    break;
-                }
-            }
-        }
         
         $content = (string) $this->setContent($content)->parse();
 
