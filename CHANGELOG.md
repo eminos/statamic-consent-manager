@@ -5,6 +5,26 @@ All notable changes to Statamic Consent Manager will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-11-16
+
+### Added
+- Purpose-specific Google Tag service labels and translated descriptions based on the mapped consent types (#3).
+- Browser regression coverage for stylesheet isolation and required-service consent behavior.
+
+### Fixed
+- Parse Antlers variables, modifiers, and partials inside `consent_manager:require`, including both placeholder syntaxes, while preserving the surrounding context (#4).
+- Isolate the bundled Tailwind reset, utilities, theme variables, and custom property registrations from the host website (#5).
+- Keep required services enabled through Reject All, saving preferences, stale cookies, and Google consent updates, including services assigned to both required and optional categories.
+- Render required scripts consistently on the server without waiting for a consent cookie.
+- Merge published translation overrides with package defaults and preserve customized legacy Google Tag descriptions.
+
+### Upgrade Notes
+- PHP and Statamic requirements remain unchanged: PHP 8.3+ and Statamic 6.
+- Compiled frontend assets and their Vite manifest are included. Assets publish automatically during the Statamic install/update process; no npm build is needed on the consuming site.
+- Existing dialog classes, data attributes, service handles, and consent cookie structure are preserved.
+- Sites using their own Tailwind v4 build can still remove the bundled stylesheet after including the dialog classes and placeholder helper in their build. See the customization documentation.
+- Required services now remain active regardless of previously denied cookie values. Optional services remain subject to consent.
+
 ## [2.0.2] - 2026-05-25
 
 ### Fixed
