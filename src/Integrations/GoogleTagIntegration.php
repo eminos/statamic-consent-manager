@@ -81,8 +81,11 @@ class GoogleTagIntegration extends Integration
 
     private function describeStorageTypes(array $storageTypes): array
     {
+        $translations = require __DIR__.'/../../resources/lang/en/dialog.php';
+        $defaults = $translations['integrations']['google_tag'];
         $purposes = [];
         $descriptions = [];
+        $hasCustomPurposeDescription = false;
 
         foreach (array_unique($storageTypes) as $storageType) {
             $purpose = self::STORAGE_PURPOSES[$storageType] ?? null;
@@ -91,15 +94,20 @@ class GoogleTagIntegration extends Integration
             }
 
             $purposes[$purpose] = __('consent-manager::dialog.integrations.google_tag.purposes.'.$purpose);
-            $descriptions[] = __('consent-manager::dialog.integrations.google_tag.storage_descriptions.'.$storageType);
+            $description = __('consent-manager::dialog.integrations.google_tag.storage_descriptions.'.$storageType);
+            $hasCustomPurposeDescription = $hasCustomPurposeDescription || $description !== $defaults['storage_descriptions'][$storageType];
+            $descriptions[] = $description;
         }
+
+        $legacyDescription = $this->description();
+        $useLegacyDescription = $legacyDescription !== $defaults['description'] && ! $hasCustomPurposeDescription;
 
         return [
             'name' => $purposes ? __('consent-manager::dialog.integrations.google_tag.service_name', [
                 'name' => $this->name(),
                 'purposes' => implode(', ', $purposes),
             ]) : $this->name(),
-            'description' => $descriptions ? implode(' ', $descriptions) : $this->description(),
+            'description' => $descriptions && ! $useLegacyDescription ? implode(' ', $descriptions) : $legacyDescription,
         ];
     }
 }
