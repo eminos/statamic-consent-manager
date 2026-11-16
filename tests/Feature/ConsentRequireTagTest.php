@@ -268,3 +268,82 @@ it('renders content directly for integration service when user has consent', fun
     unset($_COOKIE[$cookieName]);
 });
 
+describe('Antlers content', function () {
+    beforeEach(function () {
+        unset($_COOKIE[config('consent-manager.cookie_name')]);
+        view()->addLocation(__DIR__.'/../fixtures/views');
+    });
+
+    afterEach(function () {
+        unset($_COOKIE[config('consent-manager.cookie_name')]);
+    });
+
+    it('parses variables, modifiers and partials in the surrounding loop context', function (bool $consented, bool $required) {
+        $this->createTestConfig([
+            'categories' => [['name' => 'Marketing', 'handle' => 'marketing', 'required' => $required]],
+            'services' => [['name' => 'YouTube', 'handle' => 'youtube', 'categories' => ['marketing']]],
+            'integrations' => [],
+        ]);
+
+        if ($consented) {
+            $_COOKIE[config('consent-manager.cookie_name')] = json_encode(['services' => ['youtube' => true]]);
+        }
+
+        $output = (string) Parse::template(
+            '{{ videos }}{{ consent_manager:require service="youtube" }}{{ partial:consent-video }}{{ /consent_manager:require }}{{ /videos }}',
+            ['videos' => [
+                ['youtube_url' => 'https://www.youtube.com/watch?v=first-video', 'title' => 'First video'],
+                ['youtube_url' => 'https://www.youtube.com/watch?v=second-video', 'title' => 'Second video'],
+            ]]
+        );
+
+        expect($output)
+            ->toContain('src="https://www.youtube-nocookie.com/embed/first-video" title="First video"')
+            ->toContain('src="https://www.youtube-nocookie.com/embed/second-video" title="Second video"')
+            ->not->toContain('{{');
+
+        expect(substr_count($output, '<template'))->toBe($consented || $required ? 0 : 2);
+    })->with([
+        'without consent' => [false, false],
+        'with consent' => [true, false],
+        'required category' => [false, true],
+    ]);
+
+    it('parses placeholder partials before checking for an existing wrapper', function (string $slot) {
+        $this->createTestConfig([
+            'categories' => [['name' => 'Marketing', 'required' => false]],
+            'services' => [['name' => 'YouTube', 'handle' => 'youtube', 'categories' => ['marketing']]],
+            'integrations' => [],
+        ]);
+
+        $output = (string) Parse::template(
+            '{{ consent_manager:require service="youtube" }}{{ '.$slot.' }}{{ partial:consent-placeholder }}{{ /'.$slot.' }}<iframe src="{{ video_url }}"></iframe>{{ /consent_manager:require }}',
+            ['message' => 'Accept video cookies', 'service_handle' => 'youtube', 'video_url' => '/video']
+        );
+
+        expect($output)
+            ->toContain('<p>Accept video cookies</p>')
+            ->toContain('data-give-consent="youtube"')
+            ->toContain('<template data-consent-manager-script data-service-handle="youtube"><iframe src="/video"></iframe></template>')
+            ->not->toContain('{{');
+
+        expect(substr_count($output, 'data-consent-placeholder="youtube"'))->toBe(1);
+    })->with(['placeholder', 'slot:placeholder']);
+
+    it('does not evaluate an unused placeholder when consent is granted', function (string $slot) {
+        $this->createTestConfig([
+            'categories' => [['name' => 'Marketing', 'required' => false]],
+            'services' => [['name' => 'YouTube', 'handle' => 'youtube', 'categories' => ['marketing']]],
+            'integrations' => [],
+        ]);
+        $_COOKIE[config('consent-manager.cookie_name')] = json_encode(['services' => ['youtube' => true]]);
+
+        $output = (string) Parse::template(
+            '{{ consent_manager:require service="youtube" }}{{ '.$slot.' }}{{ partial:missing-placeholder }}{{ /'.$slot.' }}<p>{{ title }}</p>{{ /consent_manager:require }}',
+            ['title' => 'Video content']
+        );
+
+        expect($output)->toBe('<p>Video content</p>');
+    })->with(['placeholder', 'slot:placeholder']);
+});
+

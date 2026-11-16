@@ -90,9 +90,13 @@ trait HandlesRequireTag
             }
         }
         
+        $content = (string) $this->setContent($content)->parse();
+
         if ($hasConsent) {
             return $content;
         }
+
+        $placeholder = (string) $this->setContent($placeholder)->parse();
 
         $hasAttribute = !empty($placeholder) && str_contains($placeholder, 'data-consent-placeholder');
         
