@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 
 @source "../views/**/*.{antlers.html,antlers.php,html}";
 @source "../js/**/*.{js,ts}";

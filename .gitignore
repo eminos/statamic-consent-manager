@@ -3,3 +3,5 @@ vendor
 .phpunit.cache
 tests/__fixtures__
 .claude
+playwright-report
+test-results

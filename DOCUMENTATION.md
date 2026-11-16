@@ -37,7 +37,7 @@ Customize the consent dialog appearance:
 php artisan vendor:publish --tag=consent-manager-views
 ```
 
-Views will be published to `resources/views/vendor/statamic-consent-manager/dialog/`
+Views will be published to `resources/views/vendor/consent-manager/dialog/`
 
 Customize the templates for built-in integrations (Google Tag, Meta Pixel, LinkedIn):
 
@@ -45,7 +45,7 @@ Customize the templates for built-in integrations (Google Tag, Meta Pixel, Linke
 php artisan vendor:publish --tag=consent-manager-integrations
 ```
 
-Integration views will be published to `resources/views/vendor/statamic-consent-manager/integrations/`
+Integration views will be published to `resources/views/vendor/consent-manager/integrations/`
 
 ### Publish Config (Optional)
 
@@ -425,9 +425,28 @@ Publish the views to customize the consent dialog appearance:
 php artisan vendor:publish --tag=consent-manager-views
 ```
 
-Then edit `resources/views/vendor/statamic-consent-manager/dialog/consent-dialog.antlers.html`
+Then edit `resources/views/vendor/consent-manager/dialog/consent-dialog.antlers.html`.
 
-The dialog uses Tailwind CSS by default, but you can replace it with your own styling framework.
+The bundled stylesheet contains Tailwind utilities, a reset and theme defaults scoped to `dialog[data-consent-manager]`. Its CSS variables are namespaced, so you can leave it included alongside your site's Tailwind or another CSS framework. The dialog's class names and JavaScript data attributes are unchanged; existing published templates can use the updated assets.
+
+#### Using Your Site's Tailwind Build
+
+If your site uses Tailwind CSS v4, you can remove the addon's stylesheet `<link>` from the published template and generate the dialog styles with your own build. Removing the stylesheet avoids loading a second Tailwind bundle, but your build must include every class used in the dialog, including its state variants. The dialog then uses your site's theme and reset.
+
+For a stylesheet at `resources/css/site.css`, explicitly register the published template and retain the placeholder helper:
+
+```css
+@import "tailwindcss";
+@source "../views/vendor/consent-manager/dialog";
+
+[data-consent-placeholder] {
+    display: contents;
+}
+```
+
+Keep the JavaScript `<script>` in the template and rebuild your site's assets. Sites using Tailwind v3 should keep the bundled stylesheet or adapt the dialog's v4 utilities and variants to their build.
+
+If you override the bundled dialog with another styling framework, retain the `dialog` elements and their `data-consent-manager` attributes, or replace the bundled styles as well.
 
 ### Customizing Text and Labels
 

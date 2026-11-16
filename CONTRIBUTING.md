@@ -40,6 +40,18 @@ Or use Pest directly:
 ./vendor/bin/pest --coverage
 ```
 
+#### Frontend Style Regression Tests
+
+The browser tests build the shipped CSS and check isolation from a host Tailwind theme and a plain page, plus dialog toggle styles:
+
+```bash
+npm install
+npx playwright install chromium
+npm run test:frontend
+```
+
+To use an installed Chrome browser instead, run `PLAYWRIGHT_CHANNEL=chrome npm run test:frontend`.
+
 #### Run Tests in Parallel
 
 ```bash
