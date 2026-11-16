@@ -36,9 +36,6 @@ class ServiceProvider extends AddonServiceProvider
         ], 'consent-manager');
         
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'consent-manager');
-        if (is_dir(lang_path('vendor/consent-manager'))) {
-            $this->loadTranslationsFrom(lang_path('vendor/consent-manager'), 'consent-manager');
-        }
     }
 
     public function bootAddon(): void

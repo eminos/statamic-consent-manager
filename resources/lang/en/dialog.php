@@ -21,6 +21,23 @@ return [
         'google_tag' => [
             'name' => 'Google Tag',
             'description' => 'Tracks website usage and performance metrics for Google Analytics, Ads, and other Google services.',
+            'service_name' => ':name (:purposes)',
+            'purposes' => [
+                'functionality' => 'Functionality',
+                'personalization' => 'Personalization',
+                'security' => 'Security',
+                'analytics' => 'Analytics',
+                'advertising' => 'Advertising',
+            ],
+            'storage_descriptions' => [
+                'functionality_storage' => 'Stores preferences for website features, such as language settings.',
+                'personalization_storage' => 'Stores information for personalized content, such as video recommendations.',
+                'security_storage' => 'Stores information for authentication, fraud prevention, and other security features.',
+                'analytics_storage' => 'Stores information to measure website visits and usage.',
+                'ad_storage' => 'Stores information for advertising.',
+                'ad_user_data' => 'Allows user data to be sent to Google for advertising.',
+                'ad_personalization' => 'Allows personalized advertising.',
+            ],
         ],
         'meta_pixel' => [
             'name' => 'Facebook Pixel',

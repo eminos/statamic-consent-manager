@@ -4,6 +4,16 @@ namespace Eminos\StatamicConsentManager\Integrations;
 
 class GoogleTagIntegration extends Integration
 {
+    private const STORAGE_PURPOSES = [
+        'functionality_storage' => 'functionality',
+        'personalization_storage' => 'personalization',
+        'security_storage' => 'security',
+        'analytics_storage' => 'analytics',
+        'ad_storage' => 'advertising',
+        'ad_user_data' => 'advertising',
+        'ad_personalization' => 'advertising',
+    ];
+
     protected string $loadingStrategy = 'always'; // Uses Google Consent Mode
 
     public function key(): string
@@ -53,11 +63,12 @@ class GoogleTagIntegration extends Integration
 
         foreach ($config['service_mapping'] ?? [] as $serviceHandle => $storageTypes) {
             $category = str_replace('google_tag_', '', $serviceHandle);
+            $presentation = $this->describeStorageTypes($storageTypes);
             
             $services[] = [
                 'handle' => $serviceHandle,
-                'name' => $this->name(),
-                'description' => $this->description(),
+                'name' => $presentation['name'],
+                'description' => $presentation['description'],
                 'type' => 'integration',
                 'integration_key' => $this->key(),
                 'categories' => [$category],
@@ -66,5 +77,29 @@ class GoogleTagIntegration extends Integration
         }
 
         return $services;
+    }
+
+    private function describeStorageTypes(array $storageTypes): array
+    {
+        $purposes = [];
+        $descriptions = [];
+
+        foreach (array_unique($storageTypes) as $storageType) {
+            $purpose = self::STORAGE_PURPOSES[$storageType] ?? null;
+            if ($purpose === null) {
+                continue;
+            }
+
+            $purposes[$purpose] = __('consent-manager::dialog.integrations.google_tag.purposes.'.$purpose);
+            $descriptions[] = __('consent-manager::dialog.integrations.google_tag.storage_descriptions.'.$storageType);
+        }
+
+        return [
+            'name' => $purposes ? __('consent-manager::dialog.integrations.google_tag.service_name', [
+                'name' => $this->name(),
+                'purposes' => implode(', ', $purposes),
+            ]) : $this->name(),
+            'description' => $descriptions ? implode(' ', $descriptions) : $this->description(),
+        ];
     }
 }

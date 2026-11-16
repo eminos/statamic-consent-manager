@@ -456,7 +456,7 @@ All dialog text, button labels, and descriptions are stored in translation files
 php artisan vendor:publish --tag=consent-manager-lang
 ```
 
-Then edit `lang/vendor/statamic-consent-manager/en/dialog.php` to customize:
+Then edit `lang/vendor/consent-manager/en/dialog.php` to customize:
 
 - Dialog headline and body text
 - Button labels (Accept All, Save Preferences, etc.)
@@ -464,6 +464,10 @@ Then edit `lang/vendor/statamic-consent-manager/en/dialog.php` to customize:
 - Any other user-facing text
 
 This allows you to translate the consent dialog into multiple languages or adjust the messaging to match your brand voice.
+
+Google Tag service labels and descriptions reflect the consent types mapped to each category. For example, `functionality_storage` produces **Google Tag (Functionality)**, while advertising consent types produce **Google Tag (Advertising)**. A category containing multiple purposes lists each purpose once. The service handles and saved consent preferences remain unchanged.
+
+Customize these strings under `integrations.google_tag.service_name`, `integrations.google_tag.purposes`, and `integrations.google_tag.storage_descriptions` in the published language file. Missing keys fall back to the package defaults, so existing published files continue to work. An override of the old generic `integrations.google_tag.description` only applies when a mapping has no recognized consent types; use the new keys to customize purpose-specific text. The defaults describe Google's [consent types](https://developers.google.com/tag-platform/security/concepts/consent-mode#consent_types); review them against the services configured on your site.
 
 ### Debug Mode
 
